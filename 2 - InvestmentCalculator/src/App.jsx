@@ -2,21 +2,43 @@ import Header from "./components/Header";
 import UserInput from "./components/UserInput";
 import Results from "./components/Results";
 import { calculateInvestmentResults } from "./util/investment";
+import { useState } from "react";
+
+const INITIAL_USER_INPUT = {
+  initialInvestment: 10000,
+  annualInvestment: 1200,
+  expectedReturn: 6,
+  duration: 10,
+};
+const INITIAL_RESULTS = [];
 
 function App() {
-  function updateResults(inputs) {
-    // This function will be called by UserInput component
-    // to update the results displayed in the Results component
-    console.log("Updating inputs");
-    let output = calculateInvestmentResults(inputs);
-    console.log("Calculated");
+  let [userInput, setUserInput] = useState(INITIAL_USER_INPUT);
+  const [results, setResults] = useState(INITIAL_RESULTS);
+
+  function handleResultsChanged(inputs) {
+    setResults(() => {
+      return calculateInvestmentResults(inputs);
+    });
+  }
+
+  function handleInputChanged(event) {
+    const { name, value } = event.target;
+    setUserInput((prevInput) => {
+      const newInputs = {
+        ...prevInput,
+        [name]: value,
+      };
+      return newInputs;
+    });
+    handleResultsChanged(userInput);
   }
 
   return (
     <>
       <Header />
-      <UserInput updateResults={updateResults} />
-      <Results />
+      <UserInput userInput={userInput} onChange={handleInputChanged} />
+      <Results results={results} />
     </>
   );
 }
