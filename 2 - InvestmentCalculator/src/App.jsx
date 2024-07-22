@@ -25,11 +25,17 @@ function App() {
     });
   }
 
+  // Hide the table if the duration is less than 1 year
+  const userInputValid = userInput.duration > 0;
+
   return (
     <>
       <Header />
       <UserInput userInput={userInput} onChange={handleInputChanged} />
-      <Results userInput={userInput} />
+      {!userInputValid && (
+        <p className="center">Duration must be greater than 0</p>
+      )}
+      {userInputValid && <Results userInput={userInput} />}
     </>
   );
 }
