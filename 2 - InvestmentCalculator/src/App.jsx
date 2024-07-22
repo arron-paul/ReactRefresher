@@ -19,7 +19,8 @@ function App() {
       // Combine the old input state and change the key that was updated
       return {
         ...prevInput,
-        [name]: value,
+        // Convert the value to a number with +
+        [name]: +value,
       };
     });
   }
