@@ -1,11 +1,16 @@
-import { formatter } from "../util/investment.js";
-export default function ResultsTable({ results = [] }) {
+import { useState } from "react";
+import { calculateInvestmentResults, formatter } from "../util/investment.js";
+const INITIAL_RESULTS = [];
+export default function ResultsTable({ userInput }) {
+  // We dont need to store any state in this component
+  // as we can calculate the results directly from the `userInput` prop
+  const results = calculateInvestmentResults(userInput);
+
+  let totalInterest = 0;
+  let totalAmountInvested = 0;
   let tableData = results.map((yearData) => {
-    let totalInterest =
-      yearData.valueEndOfYear -
-      yearData.annualInvestment * yearData.year -
-      yearData.valueEndOfYear;
-    let totalAmountInvested = yearData.valueEndOfYear - totalInterest;
+    totalInterest += yearData.interest;
+    totalAmountInvested += yearData.annualInvestment + yearData.interest;
     return (
       <tr key={yearData.year}>
         <td>{yearData.year}</td>
@@ -28,7 +33,7 @@ export default function ResultsTable({ results = [] }) {
           <th>Invested Capital</th>
         </tr>
       </thead>
-      <tbody>{results.length > 0 && tableData}</tbody>
+      <tbody>{tableData}</tbody>
     </table>
   );
 }
